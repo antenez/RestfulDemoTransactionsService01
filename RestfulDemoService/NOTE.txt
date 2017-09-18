@@ -1,0 +1,11 @@
+Services are implemented.
+
+mvn install is working. 
+Additionally you can run service by using spring-boot:run command. This will run in memory tomcat instance and services become available on localhost:8080
+
+In test package ba.enox.codesample.restfuldemo.api you can find:
+	TransactionControllerTest which test basic functionalities
+	ThreadExecutionTest with simple thread execution and calculation check
+	Restxxx two soap ui projects for manual execution.
+	
+Best Regards,Eno.
