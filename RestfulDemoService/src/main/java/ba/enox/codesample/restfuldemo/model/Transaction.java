@@ -12,7 +12,7 @@ public class Transaction {
 	Long timestamp;
 
 	public Transaction() {
-	};
+	}
 
 	public Transaction(Double amount, Long timestamp) {
 		this.amount = amount;

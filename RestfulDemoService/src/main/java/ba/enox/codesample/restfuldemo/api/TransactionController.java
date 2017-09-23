@@ -18,8 +18,6 @@ import ba.enox.codesample.restfuldemo.service.TransactionService;
 @RestController
 public class TransactionController {
 
-	private static BigInteger nextId;
-
 	@Autowired
 	TransactionService transactionService;
 
@@ -27,8 +25,6 @@ public class TransactionController {
 
 	)
 	public ResponseEntity<Void> addTransaction(@RequestBody Transaction transaction) {
-		// System.out.println("+++ Adding transacton " +
-		// transaction.getTimestamp()+" amount: "+transaction.getAmount());
 
 		if (transaction.getTimestamp() < getEpochLastMinnuteValue()) {
 			System.out.println("Older then one minnute! No Content");
