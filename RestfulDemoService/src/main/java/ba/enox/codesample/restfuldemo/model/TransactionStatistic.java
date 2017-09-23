@@ -5,23 +5,23 @@ public class TransactionStatistic {
 	/**
 	 * sum is a double specifying the total sum of transaction value in the last 60 seconds
 	 */
-	Double sum;
+	private Double sum;
 	/**
 	 * avg is a double specifying the average amount of transaction value in the last 60 seconds
 	 */
-	Double avg;
+	private Double avg;
 	/**
 	 * max is a double specifying single highest transaction value in the last 60 seconds
 	 */
-	Double max;
+	private Double max;
 	/**
 	 * min is a double specifying single lowest transaction value in the last 60 seconds
 	 */
-	Double min;
+	private Double min;
 	/**
 	 * count is a long specifying the total number of transactions happened in the last 60	seconds
 	 */
-	Long count;
+	private Long count;
 	
 	public TransactionStatistic() {
 		super();
@@ -29,7 +29,7 @@ public class TransactionStatistic {
 		this.avg = 0D;
 		this.max = 0D;
 		this.min = 0D;
-		this.count = Long.valueOf(0);
+		this.count = 0L;
 	}
 
 	public Double getSum() {

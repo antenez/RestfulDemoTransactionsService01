@@ -87,44 +87,10 @@ public class ThreadExecutionTest {
 	public void getStatisticsMockedDBLayerFullTest() throws Exception {
 
 		// test for threads first part
-		(new Thread() {
-			public void run() {
-				// do stuff
-				Transaction t = new Transaction();
-				for (int i = 1; i <= 2000; i++) {
-					t.setAmount(new Double(i));
-					t.setTimestamp((Instant.now().getEpochSecond() + 60 + i) * 1000);
-
-					try {
-						mockMvc.perform(post("/transactions").content(asJsonString(t)).contentType(APPLICATION_JSON))
-								.andExpect(status().isCreated());
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
+		doWork().start();
 		System.out.println("+++first thread runn");
 		// test for threads secondpart
-		(new Thread() {
-			public void run() {
-				// do stuff
-				Transaction t = new Transaction();
-				for (int i = 1; i <= 2000; i++) {
-					t.setAmount(new Double(i));
-					t.setTimestamp((Instant.now().getEpochSecond() + 60 + i) * 1000);
-
-					try {
-						mockMvc.perform(post("/transactions").content(asJsonString(t)).contentType(APPLICATION_JSON))
-								.andExpect(status().isCreated());
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
+		(doWork()).start();
 		System.out.println("+++second thread runn");
 		System.out.println("+++sleep some time");
 		Thread.sleep(10000);
@@ -150,6 +116,25 @@ public class ThreadExecutionTest {
 																						// long
 				.andExpect(jsonPath("min", is(ts.getMin()))).andExpect(jsonPath("max", is(ts.getMax())))
 				.andExpect(jsonPath("sum", is(ts.getSum())));
+	}
+
+	private Thread doWork() {
+		return new Thread(() -> {
+            // do stuff
+            Transaction t = new Transaction();
+            for (int i = 1; i <= 2000; i++) {
+                t.setAmount(new Double(i));
+                t.setTimestamp((Instant.now().getEpochSecond() + 60 + i) * 1000);
+
+                try {
+                    mockMvc.perform(post("/transactions").content(asJsonString(t)).contentType(APPLICATION_JSON))
+                            .andExpect(status().isCreated());
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
 	}
 
 	/*

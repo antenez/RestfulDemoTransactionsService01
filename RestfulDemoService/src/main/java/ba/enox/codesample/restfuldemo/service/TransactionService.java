@@ -1,8 +1,9 @@
 package ba.enox.codesample.restfuldemo.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,8 @@ public class TransactionService {
 	@Autowired
 	private TransactionsHome transactionRequestHome;
 
-	public synchronized ConcurrentNavigableMap<Long, List<Transaction>> saveTransaction(Transaction transaction) {
-		ConcurrentNavigableMap<Long, List<Transaction>> cnm = transactionRequestHome.saveTransaction(transaction);
-		return cnm;
+	public synchronized void saveTransaction(Transaction transaction) {
+		transactionRequestHome.saveTransaction(transaction);
 	}
 
 	/**
@@ -28,40 +28,36 @@ public class TransactionService {
 	 *            this is 13digits value. Timestamp + 000
 	 * @return
 	 */
-	public synchronized TransactionStatistic getStatisticInTime(Long fromEpochTimeWithZeroMilliseconds) {
+	public synchronized Optional<TransactionStatistic> getStatisticInTime(Long fromEpochTimeWithZeroMilliseconds) {
 		// get tail from map
 		System.out.println("+++From epoch " + fromEpochTimeWithZeroMilliseconds);
-		TransactionStatistic transactionStatistic = new TransactionStatistic();
-
-		final List<Transaction> transactions = new ArrayList<Transaction>();
-
-		this.getTransactions(fromEpochTimeWithZeroMilliseconds).values().parallelStream()
-				.forEach(list -> transactions.addAll(list));
-
-		ConcurrentNavigableMap<Long, List<Transaction>> cnm = this.getTransactions(123L);
+		// List of lists can be converted into a list of all values with flatMap
+		final List<Transaction> transactions = getTransactions(fromEpochTimeWithZeroMilliseconds)
+				.values().parallelStream()
+				.flatMap(List::stream)
+				.collect(Collectors.toList());
 
 		if (transactions.isEmpty()) {
 			System.out.println("+++No Transactions in list! from epoch " + fromEpochTimeWithZeroMilliseconds);
-			return transactionStatistic;
+			return Optional.empty();
 		}
 
-		// for (Transaction t : transactions){
-		// System.out.println("+++t "+t.getTimestamp() + " amount "+
-		// t.getAmount() );
-		// }
+		return Optional.of(createTransactionStatistic(transactions));
+	}
 
-		transactionStatistic.setCount(new Long(transactions.size()));
-		transactionStatistic.setSum(transactions.parallelStream().mapToDouble(a -> a.getAmount()).sum());
+	private TransactionStatistic createTransactionStatistic(List<Transaction> transactions) {
+		TransactionStatistic transactionStatistic = new TransactionStatistic();
+		transactionStatistic.setCount((long) transactions.size());
+		transactionStatistic.setSum(transactions.parallelStream().mapToDouble(Transaction::getAmount).sum());
 
 		transactionStatistic
-				.setAvg(transactions.parallelStream().mapToDouble(a -> a.getAmount()).average().getAsDouble());
-		transactionStatistic.setMax(transactions.parallelStream().mapToDouble(a -> a.getAmount()).max().getAsDouble());
-		transactionStatistic.setMin(transactions.parallelStream().mapToDouble(a -> a.getAmount()).min().getAsDouble());
-
+				.setAvg(transactions.parallelStream().mapToDouble(Transaction::getAmount).average().getAsDouble());
+		transactionStatistic.setMax(transactions.parallelStream().mapToDouble(Transaction::getAmount).max().getAsDouble());
+		transactionStatistic.setMin(transactions.parallelStream().mapToDouble(Transaction::getAmount).min().getAsDouble());
 		return transactionStatistic;
 	}
 
-	public ConcurrentNavigableMap<Long, List<Transaction>> getTransactions(long lastSeconds) {
+	private ConcurrentNavigableMap<Long, List<Transaction>> getTransactions(long lastSeconds) {
 		return transactionRequestHome.getTransactions().tailMap(lastSeconds);
 	}
 
