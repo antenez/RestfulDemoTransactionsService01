@@ -2,10 +2,6 @@ package ba.enox.codesample.restfuldemo.api;
 
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import ba.enox.codesample.restfuldemo.model.Transaction;
 import ba.enox.codesample.restfuldemo.model.TransactionStatistic;

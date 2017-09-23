@@ -1,7 +1,5 @@
 package ba.enox.codesample.restfuldemo.model;
 
-import java.math.BigInteger;
-
 public class TransactionStatistic {
 
 	/**

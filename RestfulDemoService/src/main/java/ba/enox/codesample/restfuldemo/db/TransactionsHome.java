@@ -1,6 +1,5 @@
 package ba.enox.codesample.restfuldemo.db;
 
-import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentNavigableMap;

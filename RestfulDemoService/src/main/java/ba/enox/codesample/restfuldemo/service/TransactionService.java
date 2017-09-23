@@ -1,13 +1,10 @@
 package ba.enox.codesample.restfuldemo.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentNavigableMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import ba.enox.codesample.restfuldemo.db.TransactionsHome;
