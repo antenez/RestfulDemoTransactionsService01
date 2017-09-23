@@ -19,14 +19,14 @@ public class TransactionsHome {
 	private ConcurrentNavigableMap<Long, List<Transaction>> transactions;
 	
 	public TransactionsHome(){
-		transactions = new ConcurrentSkipListMap<Long, List<Transaction>>();
+		transactions = new ConcurrentSkipListMap<>();
 	}
 	
 	public synchronized ConcurrentNavigableMap<Long, List<Transaction>> saveTransaction(Transaction transaction){
 		List<Transaction> actualTimeTransactions = transactions.get(transaction.getTimestamp());
 		
 		if(actualTimeTransactions == null || actualTimeTransactions.isEmpty()){
-			actualTimeTransactions=new ArrayList<Transaction>();
+			actualTimeTransactions= new ArrayList<>();
 		}
 		actualTimeTransactions.add(transaction);
 		transactions.put(transaction.getTimestamp(),actualTimeTransactions);		

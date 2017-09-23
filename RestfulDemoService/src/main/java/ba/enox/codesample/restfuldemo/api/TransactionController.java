@@ -28,10 +28,10 @@ public class TransactionController {
 
 		if (transaction.getTimestamp() < getEpochLastMinnuteValue()) {
 			System.out.println("Older then one minnute! No Content");
-			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		transactionService.saveTransaction(transaction);
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -40,7 +40,7 @@ public class TransactionController {
 	// TransactionStatistic
 	public ResponseEntity<TransactionStatistic> last60SecsStatistic() {
 
-		return new ResponseEntity<TransactionStatistic>(
+		return new ResponseEntity<>(
 				transactionService.getStatisticInTime(this.getEpochLastMinnuteValue()), HttpStatus.OK);
 	}
 
