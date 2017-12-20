@@ -4,15 +4,15 @@ public class Transaction {
 	/*
 	 * transaction amount
 	 */
-	Double amount;
+	private Double amount;
 	/*
 	 * transaction time in epoch in milliseconds in UTC time zone (this is not
 	 * current timestamp)
 	 */
-	Long timestamp;
+	private Long timestamp;
 
 	public Transaction() {
-	};
+	}
 
 	public Transaction(Double amount, Long timestamp) {
 		this.amount = amount;

@@ -1,11 +1,7 @@
 package ba.enox.codesample.restfuldemo.api;
 
-import java.math.BigInteger;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,50 +10,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import ba.enox.codesample.restfuldemo.model.Transaction;
 import ba.enox.codesample.restfuldemo.model.TransactionStatistic;
 import ba.enox.codesample.restfuldemo.service.TransactionService;
 
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
 @RestController
 public class TransactionController {
-
-	private static BigInteger nextId;
 
 	@Autowired
 	TransactionService transactionService;
 
-	@RequestMapping(value = "/transactions", method = RequestMethod.POST, produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE
+	@RequestMapping(value = "/transactions", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE
 
 	)
 	public ResponseEntity<Void> addTransaction(@RequestBody Transaction transaction) {
-		// System.out.println("+++ Adding transacton " +
-		// transaction.getTimestamp()+" amount: "+transaction.getAmount());
 
-		if (transaction.getTimestamp() < getEpochLastMinnuteValue()) {
+		if (transaction.getTimestamp() < getEpochLastMinuteInMillis()) {
 			System.out.println("Older then one minnute! No Content");
-			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		transactionService.saveTransaction(transaction);
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE
-
-	)
-	// TransactionStatistic
+	@RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<TransactionStatistic> last60SecsStatistic() {
-
-		return new ResponseEntity<TransactionStatistic>(
-				transactionService.getStatisticInTime(this.getEpochLastMinnuteValue()), HttpStatus.OK);
+		final Optional<TransactionStatistic> statistic = transactionService.getStatisticInTime(getEpochLastMinuteInMillis());
+		if (statistic.isPresent()) {
+			return new ResponseEntity<>(statistic.get(), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	private Long getEpochLastMinnuteValue() {
-		long unixTimestamp = Instant.now().getEpochSecond();
-		Long secondForLastMinnute = unixTimestamp - 60;
-		return secondForLastMinnute * 1000;// add 000 because demo data
-
+	private Long getEpochLastMinuteInMillis() {
+		return  (Instant.now().getEpochSecond() - 60) * 1000;
 	}
-
 }
